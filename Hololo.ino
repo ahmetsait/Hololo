@@ -41,14 +41,14 @@ inline Vector2 rotateVector(Vector2 v, float angle)
 inline void writeRegister(byte data)
 {
 	digitalWrite(latchPin, LOW);
-	shiftOut(dataPin, clockPin, LSBFIRST, data);
+	shiftOut(dataPin, clockPin, MSBFIRST, data);
 	digitalWrite(latchPin, HIGH);
 }
 
 /// Turns leds on/off according to the current render state
 inline void updateLeds()
 {
-	byte data = (byte)((~((ledMatrix >> (rowIndex * 4)) & 0x000F) << 4) | (B1000 >> rowIndex));
+	byte data = (byte)(((ledMatrix >> (rowIndex * 4)) & 0x000F) << 4 | (~(B11110000 | (B0001 << rowIndex))));
 	writeRegister(data);
 }
 
