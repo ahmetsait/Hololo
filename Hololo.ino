@@ -129,6 +129,7 @@ void loop()
 	if (!turn)
 		angularPosition += microDiff * angularVelocity;
 	
+	ledMatrix = 0;
 	uint16_t _bit = 1;
 	for (byte i = 0; i < ledCount; i++)
 	{
