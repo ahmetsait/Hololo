@@ -104,9 +104,9 @@ unsigned long lastMicro = 0;
 
 void loop()
 {
-	unsigned long now = micros(),
-		microDiff = wrapDiff(now, lastMicro),
-		relayMicroDiff = wrapDiff(now, lastRelayHighMicro);
+	unsigned long rightNow = micros(),
+		microDiff = wrapDiff(rightNow, lastMicro),
+		relayMicroDiff = wrapDiff(rightNow, lastRelayHighMicro);
 	
 	if (relayMicroDiff > relayBounceSleep && lastRelayHighMicro != 0 && digitalRead(reedRelay) == HIGH)
 	{
@@ -117,17 +117,17 @@ void loop()
 	else
 		angularPosition += microDiff * angularVelocity;
 	
-	uint16_t bit = 1;
+	uint16_t _bit = 1;
 	for (byte i = 0; i < ledCount; i++)
 	{
 		if (isPointInTriangle(getLedCoord(angularPosition, i), triangle))
-			ledMatrix |= bit;
+			ledMatrix |= _bit;
 		
-		bit = bit << 1;
+		_bit = _bit << 1;
 	}
 	
 	rowIndex = rowIndex == 3 ? 0 : rowIndex + 1;
 	updateLeds();
 	
-	lastMicro = now;
+	lastMicro = rightNow;
 }
