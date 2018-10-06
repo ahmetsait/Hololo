@@ -100,6 +100,7 @@ void setup()
 	triangle[2] = rotateVector(v, deg2Rad(240));
 }
 
+bool wasRelayHigh = false;
 unsigned long lastMicro = 0;
 
 void loop()
@@ -108,13 +109,24 @@ void loop()
 		microDiff = wrapDiff(rightNow, lastMicro),
 		relayMicroDiff = wrapDiff(rightNow, lastRelayHighMicro);
 	
-	if (relayMicroDiff > relayBounceSleep && lastRelayHighMicro != 0 && digitalRead(reedRelay) == HIGH)
+	bool turn = false;
+	
+	if (relayMicroDiff > relayBounceSleep && lastRelayHighMicro != 0)
 	{
-		angularPosition = 0;
-		angularVelocity = (M_PI * 2) / relayMicroDiff;
-		lastRelayHighMicro = now;
+		bool relayHigh = digitalRead(reedRelay) == HIGH;
+		if (!wasRelayHigh && relayHigh)
+		{
+			angularPosition = 0;
+			angularVelocity = (M_PI * 2) / relayMicroDiff;
+			lastRelayHighMicro = rightNow;
+			wasRelayHigh = true;
+			turn = true;
+		}
+		else if (wasRelayHigh && !relayHigh)
+			wasRelayHigh = false;
 	}
-	else
+	
+	if (!turn)
 		angularPosition += microDiff * angularVelocity;
 	
 	uint16_t _bit = 1;
