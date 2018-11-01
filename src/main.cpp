@@ -147,7 +147,7 @@ void loop()
 	
 	// Periodic modulo for angle (360 degree)
 	if (angularPosition > TWO_PI)
-		angularPosition = fmodf(angularPosition, TWO_PI);
+		angularPosition -= TWO_PI;
 
 	// Calculate and write led states to ledMatrix
 	ledMatrix = 0;
