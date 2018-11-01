@@ -41,8 +41,8 @@ inline void writeRegister(matrix_t data)
 	if (registerStates != data)
 	{
 		digitalWrite(latchPin, LOW);
-		for (int i = 0; i < sizeof(data); i++)
-			shiftOut(dataPin, clockPin, LSBFIRST, (uint8_t)(data >> (i * 8) & 0xFF));
+		for (int i = sizeof(data); i >= 0; i--)
+			shiftOut(dataPin, clockPin, MSBFIRST, (uint8_t)(data >> (i * 8) & 0xFF));
 		digitalWrite(latchPin, HIGH);
 		registerStates = data;
 	}
@@ -149,6 +149,7 @@ void loop()
 	if (angularPosition > TWO_PI)
 		angularPosition = fmodf(angularPosition, TWO_PI);
 
+	// Calculate and write led states to ledMatrix
 	ledMatrix = 0;
 	matrix_t bitMask = 1;
 	for (int i = 0; i < ledCount; i++)
